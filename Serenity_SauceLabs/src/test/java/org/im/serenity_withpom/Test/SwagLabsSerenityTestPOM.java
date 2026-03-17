@@ -1,10 +1,7 @@
 package org.im.serenity_withpom.Test;
 
-
-
 import net.serenitybdd.junit5.SerenityJUnit5Extension;
 import net.thucydides.core.annotations.Managed;
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.im.serenity_withpom.pages.*;
 import org.junit.jupiter.api.DisplayName;
@@ -25,14 +22,6 @@ public class SwagLabsSerenityTestPOM {
     CheckoutOverviewPage checkoutOverviewPage;
     FinishPage finishPage;
 
-
-//    @Test
-//    @DisplayName("Check that the webdriver works")
-//    public void checkWebDriver() {
-//        webDriver.get(BASE_URL);
-//        Assertions.assertEquals(BASE_URL, webDriver.getCurrentUrl());
-//        Assertions.assertEquals("Swag Labs", webDriver.getTitle());
-//    }
 
     @Test
     @DisplayName("Successful login with valid credentials should redirect to inventory page")
@@ -111,8 +100,7 @@ public class SwagLabsSerenityTestPOM {
         // Then: Verify item is in cart
         assertThat(cartPage.getNumberOfItemsInCart(), is(1));
         assertThat(cartPage.getFirstItemName(), is("Sauce Labs Backpack"));
-
-
+        
     }
 
     @Test
