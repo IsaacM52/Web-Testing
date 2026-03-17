@@ -216,7 +216,8 @@ public class SwagLabsTests {
         webDriver.findElement(By.id("finish")).click();
 
         // Final confirmation (requires waiting)
-        WebElement completeHeader = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".complete-header")));
+        WebElement completeHeader = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".complete-header"))
+        );
         MatcherAssert.assertThat(completeHeader.getText(), is("Thank you for your order!"));
     }
 
