@@ -6,9 +6,7 @@ import net.serenitybdd.junit5.SerenityJUnit5Extension;
 import net.thucydides.core.annotations.Managed;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.im.serenity_withpom.pages.CartPage;
-import org.im.serenity_withpom.pages.HomePage;
-import org.im.serenity_withpom.pages.InventoryPage;
+import org.im.serenity_withpom.pages.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,8 +21,9 @@ public class SwagLabsSerenityTestPOM {
     HomePage homePage;
     InventoryPage inventoryPage;
     CartPage cartPage;
-
-
+    CheckoutPage checkoutPage;
+    CheckoutOverviewPage checkoutOverviewPage;
+    FinishPage finishPage;
 
 
 //    @Test
@@ -39,8 +38,8 @@ public class SwagLabsSerenityTestPOM {
     @DisplayName("Successful login with valid credentials should redirect to inventory page")
     public void successfulLoginTest() {
         //Given
-       homePage.open();
-       // when
+        homePage.open();
+        // when
         homePage.enterUserName("standard_user");
         homePage.enterPassword("secret_sauce");
         homePage.clickLoginButton();
@@ -98,7 +97,7 @@ public class SwagLabsSerenityTestPOM {
     @DisplayName("Given I am logged in, when I add an item to the cart, then the item should appear in the cart")
     public void addItemToCartTest() {
 
-      // Given: logged in
+        // Given: logged in
         homePage.open();
         homePage.enterUserName("standard_user");
         homePage.enterPassword("secret_sauce");
@@ -116,25 +115,92 @@ public class SwagLabsSerenityTestPOM {
 
     }
 
+    @Test
+    @DisplayName("Given I have items in the cart, when I click checkout, then I go to the checkout page")
+    public void checkoutButtonNavigatesToCheckoutPage() {
+
+        // Login first
+        homePage.open();
+        homePage.enterUserName("standard_user");
+        homePage.enterPassword("secret_sauce");
+        homePage.clickLoginButton();
+
+        // Add item
+        inventoryPage.addBackpackToCart();
+        inventoryPage.clickCartIcon();
+
+        // When
+        cartPage.clickCheckout();
+
+        // Then
+        assertThat(cartPage.getDriver().getCurrentUrl(), containsString("checkout-step-one.html"));
+    }
 
 
+    @Test
+    @DisplayName("Given I have an item in the cart, when I checkout, then I should reach the checkout info page")
+    public void checkoutFlowTest() {
+
+        // Login
+        homePage.open();
+        homePage.enterUserName("standard_user");
+        homePage.enterPassword("secret_sauce");
+        homePage.clickLoginButton();
+
+        // Add item
+        inventoryPage.addBackpackToCart();
+        inventoryPage.clickCartIcon();
+
+        // Proceed to checkout
+        cartPage.clickCheckout();
+
+        // Fill out checkout form
+        checkoutPage.enterFirstName("John");
+        checkoutPage.enterLastName("Doe");
+        checkoutPage.enterPostalCode("SW1A1AA");
+        checkoutPage.clickContinue();
+
+        // Assert: verify next page loads correctly
+        assertThat(checkoutPage.getDriver().getCurrentUrl(), containsString("checkout-step-two.html"));
+    }
 
 
+    @Test
+    @DisplayName("Given I checkout, when I finish the order, then I should see the order confirmation message")
+    public void finishOrderTest() {
 
+        // Login
+        homePage.open();
+        homePage.enterUserName("standard_user");
+        homePage.enterPassword("secret_sauce");
+        homePage.clickLoginButton();
 
+        // Add item
+        inventoryPage.addBackpackToCart();
+        inventoryPage.clickCartIcon();
 
+        // Checkout step one
+        cartPage.clickCheckout();
+        checkoutPage.enterFirstName("John");
+        checkoutPage.enterLastName("Doe");
+        checkoutPage.enterPostalCode("SW1A1AA");
+        checkoutPage.clickContinue();
 
-//    public void checkNumberOfProductsOnInventnoryPage_WithWait(){
-//
-//        Wait<WebDriver> webDriverWait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
-//        webDriver.get(BASE_URL);
-//        WebElement usernameField= webDriver.findElement(org.openqa.selenium.By.name("user-name"));
-//        WebElement passwordField= webDriver.findElement(org.openqa.selenium.By.name("password"));
-//        usernameField.sendKeys("standard_user");
-//        passwordField.sendKeys("secret_sauce", Keys.ENTER);
-//        webDriverWait.until(driver -> driver.getCurrentUrl().contains("/inventory"));
-//        MatcherAssert.assertThat(webDriver.getCurrentUrl(), is("https://www.saucedemo.com/inventory.html"));
-//
-//    }
+        // Checkout overview → Finish
+        checkoutOverviewPage.clickFinishButton();
 
+        // Assert order complete
+        assertThat(finishPage.isOrderCompleteMessageDisplayed(), is(true));
+        assertThat(finishPage.getCompleteHeaderMessage(), is("Thank you for your order!"));
+    }
 }
+
+
+
+
+
+
+
+
+
+

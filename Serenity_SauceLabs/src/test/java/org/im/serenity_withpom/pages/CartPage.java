@@ -16,12 +16,29 @@ public class CartPage extends PageObject {
     @FindBy(className = "inventory_item_name")
     private WebElementFacade itemName;
 
+    @FindBy(id = "remove-sauce-labs-backpack")
+    private WebElementFacade removeBackpackButton;
+
+
+    @FindBy(id = "checkout")
+    private WebElementFacade checkoutButton;
+
+
     public int getNumberOfItemsInCart() {
         return cartItems.size();
     }
 
     public String getFirstItemName() {
         return itemName.getText();
+    }
+
+    public void removeBackpackFromCart() {
+        removeBackpackButton.click();
+    }
+
+    public void clickCheckout() {
+        checkoutButton.click();
+
     }
 }
 
