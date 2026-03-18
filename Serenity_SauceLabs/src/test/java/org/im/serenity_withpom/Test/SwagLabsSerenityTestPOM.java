@@ -100,7 +100,7 @@ public class SwagLabsSerenityTestPOM {
         // Then: Verify item is in cart
         assertThat(cartPage.getNumberOfItemsInCart(), is(1));
         assertThat(cartPage.getFirstItemName(), is("Sauce Labs Backpack"));
-        
+
     }
 
     @Test
